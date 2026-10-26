@@ -164,12 +164,19 @@ function clearError() {
   el.input.setAttribute('aria-invalid', 'false');
 }
 
-function setHex(hex) {
+// Адресу /p/:id скидаємо на /, щойно колір змінився: інакше можна скопіювати посилання на стару палітру.
+function resetUrl() {
+  if (location.pathname !== '/') history.replaceState(null, '', '/');
+}
+
+// keepUrl: палітру відкрито за посиланням, адреса лишається.
+function setHex(hex, { keepUrl = false } = {}) {
   clearError();
   el.input.value = hex.slice(1);
   if (hex !== state.hex || !el.brandScale.children.length) {
     state.hex = hex;
     render();
+    if (!keepUrl) resetUrl();
   }
 }
 
@@ -274,6 +281,85 @@ el.theme.addEventListener('click', () => {
 applyTheme(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
 
 el.copyCss.addEventListener('click', () => copyText(state.css));
-el.share.addEventListener('click', () => showToast('Посилання на палітру з’явиться в наступному кроці'));
 
-setHex(state.hex);
+// --- поділитися ---
+
+const PALETTE_PATH = /^\/p\/([0-9a-z]{4,12})\/?$/;
+
+async function savePalette(hex) {
+  const response = await fetch('/api/palettes', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ hex }),
+  });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+}
+
+// Копіює текст, який стане відомий після запиту. Safari дозволяє писати в буфер лише в межах
+// жесту кліку, тому в ClipboardItem передаємо проміс, а не чекаємо відповіді. Не кидає помилок.
+async function copyEventually(textPromise) {
+  try {
+    if (window.ClipboardItem && navigator.clipboard?.write) {
+      const blob = textPromise.then((text) => new Blob([text], { type: 'text/plain' }));
+      await navigator.clipboard.write([new ClipboardItem({ 'text/plain': blob })]);
+      return true;
+    }
+  } catch {
+    // Пробуємо звичайний шлях нижче.
+  }
+  try {
+    const text = await textPromise;
+    if (!navigator.clipboard?.writeText) return legacyCopy(text);
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function share() {
+  el.share.disabled = true;
+  el.share.setAttribute('aria-busy', 'true');
+
+  const saved = savePalette(state.hex);
+  const copied = copyEventually(saved.then(({ url }) => url));
+  try {
+    const { id } = await saved;
+    history.replaceState(null, '', `/p/${id}`);
+    showToast((await copied) ? 'Посилання скопійовано' : 'Не вдалося скопіювати, посилання в адресному рядку');
+  } catch {
+    showToast('Не вдалося зберегти палітру');
+  } finally {
+    el.share.disabled = false;
+    el.share.removeAttribute('aria-busy');
+  }
+}
+
+el.share.addEventListener('click', share);
+
+// Повертає hex збереженої палітри або null (з тостом про причину).
+async function loadSharedPalette(id) {
+  try {
+    const response = await fetch(`/api/palettes/${id}`);
+    if (response.status === 404) {
+      showToast('Палітру не знайдено');
+      return null;
+    }
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const { hex } = await response.json();
+    return normalizeHex(hex);
+  } catch {
+    showToast('Не вдалося завантажити палітру');
+    return null;
+  }
+}
+
+async function start() {
+  const id = PALETTE_PATH.exec(location.pathname)?.[1];
+  const shared = id ? await loadSharedPalette(id) : null;
+  setHex(shared ?? state.hex, { keepUrl: Boolean(shared) });
+  if (id && !shared) resetUrl();
+}
+
+start();
