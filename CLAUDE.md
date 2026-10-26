@@ -1,9 +1,9 @@
-# CLAUDE.md - Token Lab
+# CLAUDE.md - Tokens Lab
 
 Мозок проєкту для Claude Code. Читай перед кожною задачею.
 
 ## Що це
-Token Lab - веб-інструмент для дизайнерів. Вводиш бренд-колір (hex) і отримуєш:
+Tokens Lab - веб-інструмент для дизайнерів. Вводиш бренд-колір (hex) і отримуєш:
 1. Тональну шкалу 50…950 для brand і neutral, усі значення в hex.
 2. Семантичні токени: bg, surface, text, text-muted, border, accent, accent-hover, on-accent, danger, success. Світла і темна тема.
 3. Перевірку контрасту WCAG на живому UI (кнопка, картка, інпут) з бейджами AAA / AA / AA Large / Fail.
@@ -15,7 +15,7 @@ Token Lab - веб-інструмент для дизайнерів. Вводи�
 ## Стек (не міняти без запиту)
 - Чистий HTML + CSS + vanilla JS (ES modules). Без фреймворків, без збірки, без npm-залежностей у рантаймі.
 - Хостинг: Cloudflare Pages. Бекенд: Pages Functions у `functions/`. База: Cloudflare D1, binding `DB`.
-- Локально: `npx wrangler d1 execute token-lab --local --file=schema.sql` (один раз), потім `npx wrangler pages dev` (бере D1 з `wrangler.toml`, локальна база в `.wrangler/`, нічого не йде в клауд). Прапорець `--d1 DB` НЕ додавати - він створює окрему порожню базу без таблиць.
+- Локально: `npx wrangler d1 execute tokens-lab --local --file=schema.sql` (один раз), потім `npx wrangler pages dev` (бере D1 з `wrangler.toml`, локальна база в `.wrangler/`, нічого не йде в клауд). Прапорець `--d1 DB` НЕ додавати - він створює окрему порожню базу без таблиць.
 - Тести математики кольору: `node --test` (вбудований раннер Node, без бібліотек).
 
 ## Структура

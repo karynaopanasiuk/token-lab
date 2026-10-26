@@ -3,7 +3,7 @@
 // щоб значення збігалися, а хеш відповідав інлайн-скрипту теми в index.html і 404.html.
 
 // sha256 інлайн-скрипта теми. Змінили скрипт, перерахуйте хеш (тест покаже новий).
-export const THEME_SCRIPT_HASH = 'sha256-pjRIKTwjVaG2zbxalkqUWa//lmBjOYJighL9ovTxtOc=';
+export const THEME_SCRIPT_HASH = 'sha256-aHspU/VlP/dJJ4j3fJLw7CxQLdMMwANLB/uhy7zaPv4=';
 
 // style-src-attr 'unsafe-inline' потрібен, бо інтерфейс ставить style="..." у розмітці свотчів і чипів.
 export const CONTENT_SECURITY_POLICY = [

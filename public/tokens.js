@@ -147,7 +147,7 @@ export function toCss({ hex, scales, themes }) {
   ];
 
   return [
-    `/* Token Lab - ${hex.toLowerCase()} */`,
+    `/* Tokens Lab - ${hex.toLowerCase()} */`,
     ':root {',
     ...SCALE_NAMES.flatMap((name) =>
       STEPS.map((step) => `  --${name}-${step}: ${scales[name][step].toLowerCase()};`),

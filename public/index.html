@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Token Lab</title>
+  <title>Tokens Lab</title>
   <script>
     // Тема виставляється до першого малювання, щоб не було спалаху. За замовчуванням темна.
-    try { var savedTheme = localStorage.getItem('token-lab-theme'); } catch (e) {}
+    try { var savedTheme = localStorage.getItem('tokens-lab-theme'); } catch (e) {}
     document.documentElement.dataset.theme = savedTheme === 'light' ? 'light' : 'dark';
   </script>
   <meta name="description" content="Введи hex бренду - отримаєш шкалу 50-950, токени для світлої і темної теми та перевірку контрасту WCAG.">
@@ -25,7 +25,7 @@
 
   <header class="topbar">
     <div class="topbar__inner">
-      <a class="logo" href="/"><span class="logo__mark" aria-hidden="true"></span>Token Lab</a>
+      <a class="logo" href="/"><span class="logo__mark" aria-hidden="true"></span>Tokens Lab</a>
       <nav class="nav" aria-label="Розділи">
         <a href="#scale">Шкала</a>
         <a href="#tokens">Токени</a>

@@ -1,4 +1,4 @@
-# План Token Lab
+# План Tokens Lab
 
 Статус: каркас готовий, коду ще немає. Кожен крок - окрема гілка `feat/...`, далі PR у `main`. Мердж і пуш тільки після «ок». Після кожного кроку - перевірка в браузері і список, що саме дивитись.
 
@@ -38,7 +38,7 @@
 - `schema.sql` (таблиця palettes: id, hex, версія алгоритму, дата), `wrangler.toml` з binding `DB` і `pages_build_output_dir`.
 - `functions/api/palettes.js` (POST, серверна валідація hex, короткий id без двозначних символів, повтор при колізії), `functions/api/palettes/[id].js` (GET), `functions/p/[id].js` (віддає index.html).
 - Клієнт: кнопка «Поділитися», копіювання посилання `/p/abc123`, відновлення палітри при відкритті.
-- Локально: `npx wrangler d1 execute token-lab --local --file=schema.sql`, потім `npx wrangler pages dev`.
+- Локально: `npx wrangler d1 execute tokens-lab --local --file=schema.sql`, потім `npx wrangler pages dev`.
 - Перевірка за розділом «Готово, коли» з CLAUDE.md.
 
 ## Відкриті питання
