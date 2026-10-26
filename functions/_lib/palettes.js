@@ -20,7 +20,12 @@ export function createId(fill = (bytes) => crypto.getRandomValues(bytes)) {
 export function json(body, status = 200, headers = {}) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', ...headers },
+    headers: {
+      'content-type': 'application/json; charset=utf-8',
+      'cache-control': 'no-store',
+      'x-content-type-options': 'nosniff',
+      ...headers,
+    },
   });
 }
 

@@ -1,0 +1,11 @@
+# Заголовки статичних файлів. Для відповіді функції /p/:id те саме задає
+# functions/_lib/security.js, tests/headers.test.js стежить за збігом.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-pjRIKTwjVaG2zbxalkqUWa//lmBjOYJighL9ovTxtOc='; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  X-Frame-Options: DENY
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin
+
+# Файли шрифтів не змінюються, імена без хешів, тому міняти файл означає міняти ім'я.
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
