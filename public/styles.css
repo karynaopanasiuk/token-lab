@@ -1038,12 +1038,21 @@ a {
 
   .scale__swatches {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 14px 8px;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px 6px;
+  }
+
+  .swatch {
+    gap: 6px;
   }
 
   .swatch__chip {
-    height: 64px;
+    height: 48px;
+    padding: 4px;
+  }
+
+  .swatch__badge {
+    padding: 2px 4px;
   }
 
   .tokens thead {
