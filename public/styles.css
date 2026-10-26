@@ -144,7 +144,13 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
   -webkit-text-size-adjust: 100%;
+}
+
+/* Поки JS не наповнив main, не малюємо його: порожні секції зсували б усе вниз після рендеру. */
+.main[data-pending] {
+  visibility: hidden;
 }
 
 body {
@@ -461,6 +467,7 @@ a {
 
 .preset__dot {
   flex: none;
+  background: var(--dot);
   width: 14px;
   height: 14px;
   border-radius: 4px;

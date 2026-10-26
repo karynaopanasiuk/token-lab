@@ -2,12 +2,8 @@
 import { normalizeHex, formatOklch, STEPS } from './color.js';
 import { buildTokens, checkContrast, toCss, TOKEN_NAMES } from './tokens.js';
 
-const PRESETS = [
-  { name: 'Індиго', hex: '#4F46E5' },
-  { name: 'Жовтий', hex: '#FACC15' },
-  { name: 'Бірюза', hex: '#0F766E' },
-  { name: 'Теракота', hex: '#E4572E' },
-];
+// Збігається з першим пресетом в index.html (пресети лежать у розмітці, щоб панель не росла після JS).
+const DEFAULT_HEX = '#4F46E5';
 
 const HEX_ERROR = 'Потрібно 3 або 6 символів: цифри 0-9 і літери A-F.';
 const TOAST_MS = 1600;
@@ -21,6 +17,7 @@ const el = {
   chip: $('#hex-chip'),
   error: $('#hex-error'),
   presets: $('#presets'),
+  main: $('.main'),
   metaAnchor: $('#meta-anchor'),
   metaOklch: $('#meta-oklch'),
   metaOnAccent: $('#meta-on-accent'),
@@ -38,7 +35,7 @@ const el = {
 
 const THEME_KEY = 'token-lab-theme';
 
-const state = { hex: PRESETS[0].hex, css: '' };
+const state = { hex: DEFAULT_HEX, css: '' };
 
 // --- рендер ---
 
@@ -209,14 +206,8 @@ el.input.addEventListener('keydown', (event) => {
 });
 el.picker.addEventListener('input', () => setHex(normalizeHex(el.picker.value)));
 
-for (const { name, hex } of PRESETS) {
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'preset';
-  button.dataset.hex = hex;
-  button.innerHTML = `<span class="preset__dot" style="background: ${hex}"></span>${name}`;
-  button.addEventListener('click', () => setHex(hex));
-  el.presets.append(button);
+for (const button of el.presets.children) {
+  button.addEventListener('click', () => setHex(button.dataset.hex));
 }
 
 // --- копіювання і тост ---
@@ -357,11 +348,17 @@ async function loadSharedPalette(id) {
   }
 }
 
+// main прихований, поки JS не наповнив його: інакше порожні секції малюються першими, а потім
+// штовхають усе вниз (стрибок макета). finally відкриває main навіть якщо щось пішло не так.
 async function start() {
-  const id = PALETTE_PATH.exec(location.pathname)?.[1];
-  const shared = id ? await loadSharedPalette(id) : null;
-  setHex(shared ?? state.hex, { keepUrl: Boolean(shared) });
-  if (id && !shared) resetUrl();
+  try {
+    const id = PALETTE_PATH.exec(location.pathname)?.[1];
+    const shared = id ? await loadSharedPalette(id) : null;
+    setHex(shared ?? state.hex, { keepUrl: Boolean(shared) });
+    if (id && !shared) resetUrl();
+  } finally {
+    el.main.removeAttribute('data-pending');
+  }
 }
 
 start();
