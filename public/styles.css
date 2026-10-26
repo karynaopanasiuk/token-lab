@@ -994,6 +994,33 @@ a {
   font: inherit;
 }
 
+/* --- сторінка 404 --- */
+
+.notfound {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 96px 24px;
+}
+
+.notfound__title {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1.088;
+  letter-spacing: -0.03em;
+}
+
+.notfound__text {
+  margin: 0 0 8px;
+  color: var(--ink-2);
+  font-size: 15px;
+  line-height: 23px;
+}
+
 /* --- тост --- */
 
 .toast {

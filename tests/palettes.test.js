@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { PALETTE_VERSION, ID_PATTERN, createId, json, readHex } from '../functions/_lib/palettes.js';
 import { onRequestPost, onRequest as postFallback } from '../functions/api/palettes.js';
 import { onRequestGet } from '../functions/api/palettes/[id].js';
+import { onRequest as apiNotFound } from '../functions/api/[[path]].js';
 
 const ORIGIN = 'http://localhost:8788';
 
@@ -224,5 +225,14 @@ describe('GET /api/palettes/:id', () => {
       assert.deepEqual(await response.json(), { error: 'not_found' });
       assert.equal(response.headers.get('cache-control'), 'no-store');
     }
+  });
+});
+
+describe('/api/* без власного маршруту', () => {
+  test('віддає JSON 404, а не сторінку застосунку', async () => {
+    const response = apiNotFound();
+    assert.equal(response.status, 404);
+    assert.equal(response.headers.get('content-type'), 'application/json; charset=utf-8');
+    assert.deepEqual(await response.json(), { error: 'not_found' });
   });
 });
