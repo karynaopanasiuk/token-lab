@@ -14,10 +14,11 @@ const BOTTOM_RANGE = [0.14, 0.28];
 const MIN_GAP = 0.05;
 
 // Нейтральна шкала: фіксована світлість, відтінок бренду в малій дозі.
-const NEUTRAL_TOP = 0.985;
-const NEUTRAL_BOTTOM = 0.15;
+// Краї підібрані так, щоб bg відрізнявся від білої картки, а темний bg не був чорним.
+const NEUTRAL_TOP = 0.97;
+const NEUTRAL_BOTTOM = 0.25;
 const NEUTRAL_CHROMA_SHARE = 0.1;
-const NEUTRAL_CHROMA_MAX = 0.02;
+const NEUTRAL_CHROMA_MAX = 0.014;
 
 const HEX_RE = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i;
 
@@ -175,6 +176,12 @@ export function generateNeutralScale(input) {
   const gap = (NEUTRAL_TOP - NEUTRAL_BOTTOM) / LAST;
 
   return Object.fromEntries(STEPS.map((step, i) => [step, oklchToHex(NEUTRAL_TOP - i * gap, chroma, h)]));
+}
+
+/** Підпис кольору для інтерфейсу: 'oklch(51.1% 0.230 277.0)'. */
+export function formatOklch(input) {
+  const { L, C, h } = hexToOklch(requireHex(input));
+  return `oklch(${(L * 100).toFixed(1)}% ${C.toFixed(3)} ${(C === 0 ? 0 : h).toFixed(1)})`;
 }
 
 // --- контраст WCAG 2.x ---

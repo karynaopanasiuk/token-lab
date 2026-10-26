@@ -5,6 +5,7 @@ import {
   normalizeHex,
   generateScale,
   generateNeutralScale,
+  formatOklch,
   contrastRatio,
   wcagLevel,
 } from '../public/color.js';
@@ -82,6 +83,27 @@ describe('normalizeHex', () => {
       assert.equal(normalizeHex(bad), null, JSON.stringify(bad));
     }
     for (const bad of [null, undefined, 123, {}]) assert.equal(normalizeHex(bad), null);
+  });
+});
+
+describe('formatOklch', () => {
+  test('збігається з незалежним вимірюванням', () => {
+    for (const input of [...REFERENCE_COLORS, ...pseudoRandomHexes(100, 7)]) {
+      const { L, C, h } = oklch(input);
+      const expected = `oklch(${(L * 100).toFixed(1)}% ${C.toFixed(3)} ${h.toFixed(1)})`;
+      if (C > 1e-4) assert.equal(formatOklch(input), expected, input);
+    }
+  });
+
+  test('чорний, білий і сірий без відтінку: chroma 0, hue 0', () => {
+    assert.equal(formatOklch('#000000'), 'oklch(0.0% 0.000 0.0)');
+    assert.equal(formatOklch('#FFFFFF'), 'oklch(100.0% 0.000 0.0)');
+    assert.match(formatOklch('#808080'), /^oklch\(\d+\.\d% 0\.000 0\.0\)$/);
+  });
+
+  test('shorthand і регістр не мають значення, невалідний hex кидає TypeError', () => {
+    assert.equal(formatOklch('#abc'), formatOklch('#AABBCC'));
+    assert.throws(() => formatOklch('nope'), TypeError);
   });
 });
 
