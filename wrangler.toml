@@ -1,0 +1,10 @@
+name = "token-lab"
+compatibility_date = "2025-06-01"
+pages_build_output_dir = "public"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "token-lab"
+# Плейсхолдер: локально id не потрібен, база живе в .wrangler/.
+# Після `wrangler d1 create token-lab` підставте справжній id (він не секрет).
+database_id = "00000000-0000-0000-0000-000000000000"
