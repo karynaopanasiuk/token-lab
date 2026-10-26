@@ -173,13 +173,14 @@ function setHex(hex) {
   }
 }
 
-// Поки користувач друкує: 6 символів застосовуємо одразу, зайвий символ не з hex одразу помилка,
-// неповний ввід (4-5 символів) мовчки чекає, а 3 символи приймаємо на blur або Enter.
+// Поки користувач друкує: 6 символів застосовуємо одразу, символ не з hex або більше шести
+// символів одразу помилка, неповний ввід (4-5 символів) мовчки чекає, а 3 символи
+// приймаємо на blur або Enter.
 function onInput() {
   const text = el.input.value.replace(/^#/, '').replace(/\s/g, '').toUpperCase();
   if (el.input.value !== text) el.input.value = text;
 
-  if (/[^0-9A-F]/.test(text)) return showError(HEX_ERROR);
+  if (/[^0-9A-F]/.test(text) || text.length > 6) return showError(HEX_ERROR);
   if (text.length === 6) return setHex(`#${text}`);
   clearError();
 }
@@ -193,6 +194,8 @@ function commit() {
 }
 
 el.input.addEventListener('input', onInput);
+// Виділяємо все при фокусі: нове значення замінює старе, а не дописується в кінець.
+el.input.addEventListener('focus', () => setTimeout(() => el.input.select(), 0));
 el.input.addEventListener('blur', commit);
 el.input.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') commit();
