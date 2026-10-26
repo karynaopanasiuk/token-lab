@@ -46,7 +46,7 @@ function swatches(scale, anchor) {
   return STEPS.map((step) => {
     const hex = scale[step];
     const mine = step === anchor ? '<span class="swatch__badge">твій</span>' : '';
-    return `<button type="button" class="swatch" data-copy="${hex}" aria-label="${step}, ${hex}. Копіювати">
+    return `<button type="button" class="swatch" data-copy="${hex}" aria-label="${step === anchor ? 'твій ' : ''}${step} ${hex.slice(1)}, копіювати hex">
       <span class="swatch__chip" style="--swatch: ${hex}">${mine}</span>
       <span class="swatch__step">${step}</span>
       <span class="swatch__hex">${hex.slice(1)}</span>
@@ -264,8 +264,10 @@ document.addEventListener('click', (event) => {
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
   const toLight = theme === 'dark';
-  el.theme.textContent = toLight ? 'Світла' : 'Темна';
-  el.theme.setAttribute('aria-label', toLight ? 'Перемкнути на світлу тему' : 'Перемкнути на темну тему');
+  const label = toLight ? 'Світла' : 'Темна';
+  el.theme.textContent = label;
+  // Доступна назва починається з видимого тексту (WCAG 2.5.3 Label in Name).
+  el.theme.setAttribute('aria-label', `${label}, перемкнути тему`);
 }
 
 el.theme.addEventListener('click', () => {
