@@ -171,7 +171,7 @@ describe('toCss', () => {
   const css = toCss(tokens);
 
   test('заголовок із hex бренду малими літерами', () => {
-    assert.ok(css.startsWith('/* Token Lab - #4f46e5 */\n:root {\n'));
+    assert.ok(css.startsWith('/* Tokens Lab - #4f46e5 */\n:root {\n'));
   });
 
   test('44 примітиви, hex малими літерами', () => {

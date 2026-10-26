@@ -4,7 +4,7 @@ pages_build_output_dir = "public"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "token-lab"
+database_name = "tokens-lab"
 # Id бази в Cloudflare, він не секрет. Локально (`pages dev`, `d1 execute --local`)
 # база живе в .wrangler/ і в хмару нічого не йде.
-database_id = "09834fd7-1879-4eb5-a7a0-d75a27019a39"
+database_id = "6bab7006-afe5-4b43-84df-09646387f091"

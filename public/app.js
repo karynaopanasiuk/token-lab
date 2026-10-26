@@ -33,7 +33,7 @@ const el = {
   toast: $('#toast'),
 };
 
-const THEME_KEY = 'token-lab-theme';
+const THEME_KEY = 'tokens-lab-theme';
 
 const state = { hex: DEFAULT_HEX, css: '' };
 
