@@ -65,7 +65,12 @@
 
         <div class="field">
           <span class="field__label" id="presets-label">Спробуй</span>
-          <div class="presets" id="presets" role="group" aria-labelledby="presets-label"></div>
+          <div class="presets" id="presets" role="group" aria-labelledby="presets-label">
+            <button type="button" class="preset" data-hex="#4F46E5"><span class="preset__dot" style="--dot: #4F46E5"></span>Індиго</button>
+            <button type="button" class="preset" data-hex="#FACC15"><span class="preset__dot" style="--dot: #FACC15"></span>Жовтий</button>
+            <button type="button" class="preset" data-hex="#0F766E"><span class="preset__dot" style="--dot: #0F766E"></span>Бірюза</button>
+            <button type="button" class="preset" data-hex="#E4572E"><span class="preset__dot" style="--dot: #E4572E"></span>Теракота</button>
+          </div>
         </div>
 
         <dl class="meta">
@@ -76,7 +81,7 @@
       </div>
     </aside>
 
-    <main class="main">
+    <main class="main" data-pending>
       <section class="section" id="scale" aria-labelledby="scale-title">
         <header class="section__head">
           <div>
