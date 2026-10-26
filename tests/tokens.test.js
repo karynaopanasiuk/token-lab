@@ -44,16 +44,44 @@ describe('buildTokens', () => {
     }
   });
 
-  test('світлий accent це колір користувача без змін, hover на сусідньому кроці', () => {
+  test('світлий accent це колір користувача без змін', () => {
     for (const input of SAMPLE) {
       const { hex, anchor, scales, themes } = buildTokens(input);
       assert.equal(themes.light.accent.hex, hex);
       assert.equal(scales.brand[anchor], hex);
-      // На світлій темі hover темніший: наступний крок, а з останнього назад.
-      const anchorIndex = STEPS.indexOf(anchor);
-      const expected = anchorIndex === STEPS.length - 1 ? anchorIndex - 1 : anchorIndex + 1;
-      assert.equal(stepIndex(themes.light['accent-hover']), expected, input);
     }
+  });
+
+  test('accent-hover це сусідній крок, на якому підпис кнопки лишається читабельним', () => {
+    for (const input of SAMPLE) {
+      const { scales, themes } = buildTokens(input);
+      const hexAt = (index) => scales.brand[STEPS[index]];
+      for (const [name, theme] of Object.entries(themes)) {
+        const accent = stepIndex(theme.accent);
+        const hover = stepIndex(theme['accent-hover']);
+        const label = theme['on-accent'].hex;
+        const neighbours = [accent - 1, accent + 1].filter((i) => i >= 0 && i < STEPS.length);
+        const ratios = neighbours.map((i) => contrastRatio(label, hexAt(i)));
+
+        assert.ok(neighbours.includes(hover), `${input} ${name}: hover не сусід`);
+
+        const chosen = contrastRatio(label, theme['accent-hover'].hex);
+        if (Math.max(...ratios) >= 4.5) assert.ok(chosen >= 4.5, `${input} ${name}: підпис на hover ${chosen.toFixed(2)}`);
+        else assert.ok(chosen >= Math.max(...ratios) - 1e-9, `${input} ${name}`);
+
+        // Бажаний напрямок: світла тема темніше, темна світліше, якщо там підпис читабельний.
+        const preferred = name === 'light' ? accent + 1 : accent - 1;
+        if (preferred >= 0 && preferred < STEPS.length && contrastRatio(label, hexAt(preferred)) >= 4.5) {
+          assert.equal(hover, preferred, `${input} ${name}: hover не в бажаний бік`);
+        }
+      }
+    }
+  });
+
+  test('теракота #E4572E: hover світлої теми не темнішає, бо підпис темний', () => {
+    const { themes } = buildTokens('#E4572E');
+    assert.equal(themes.light['on-accent'].ref, 'neutral-950');
+    assert.ok(ratio(themes.light['on-accent'], themes.light['accent-hover']) >= 4.5);
   });
 
   test('on-accent: білий на #4F46E5, темний на жовтому #FACC15', () => {
@@ -89,14 +117,10 @@ describe('buildTokens', () => {
     }
   });
 
-  test('темний accent має 4.5:1 на темному bg, hover світліший', () => {
+  test('темний accent має 4.5:1 на темному bg', () => {
     for (const input of SAMPLE) {
       const { themes } = buildTokens(input);
       assert.ok(ratio(themes.dark.accent, themes.dark.bg) >= 4.5, input);
-      // На темній темі hover світліший: попередній крок, а з першого вперед.
-      const accentIndex = stepIndex(themes.dark.accent);
-      const expected = accentIndex === 0 ? 1 : accentIndex - 1;
-      assert.equal(stepIndex(themes.dark['accent-hover']), expected, input);
     }
   });
 

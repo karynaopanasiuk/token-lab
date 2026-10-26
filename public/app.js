@@ -103,7 +103,7 @@ function renderCompare(root, title, theme) {
         <div class="pv-line"><span class="pv-error">Бракує @ в адресі</span>${note(byId['danger-surface'])}</div>
         <div class="pv-actions">
           <span class="pv-btn pv-btn--primary">Оформити</span>
-          <span class="pv-btn pv-btn--hover">Наведення</span>
+          <span class="pv-btn pv-btn--primary pv-btn--hover">Наведення</span>
           <span class="pv-btn pv-btn--outline">Пізніше</span>
           ${note(byId['on-accent'])}
         </div>

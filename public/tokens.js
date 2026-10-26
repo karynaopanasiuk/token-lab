@@ -80,12 +80,21 @@ export function buildTokens(input) {
     return contrastRatio(WHITE, accent.hex) >= contrastRatio(dark.hex, accent.hex) ? white : dark;
   };
 
+  // Hover на сусідньому кроці в бажаному напрямку. Якщо підпис на ньому втрачає 4.5:1,
+  // беремо протилежний бік, а якщо не читається ніде, той, де контраст кращий.
+  const hoverIndex = (index, preferred, label) => {
+    const options = [neighbour(index, preferred), neighbour(index, -preferred)];
+    const ratioAt = (i) => contrastRatio(label.hex, pick('brand', i).hex);
+    return options.find((i) => ratioAt(i) >= TEXT_MIN) ?? options.reduce((a, b) => (ratioAt(b) > ratioAt(a) ? b : a));
+  };
+
   const brandIndex = indexOf('brand', hex);
   const dangerIndex = indexOf('danger', DANGER_SEED);
   const successIndex = indexOf('success', SUCCESS_SEED);
 
   const lightBg = pick('neutral', 0);
   const lightAccent = pick('brand', brandIndex);
+  const lightOnAccent = onAccent(lightAccent);
   const light = {
     bg: lightBg,
     surface: white,
@@ -93,8 +102,8 @@ export function buildTokens(input) {
     'text-muted': pick('neutral', passingIndex('neutral', 4, 1, [lightBg, white])),
     border: pick('neutral', 2),
     accent: lightAccent,
-    'accent-hover': pick('brand', neighbour(brandIndex, 1)),
-    'on-accent': onAccent(lightAccent),
+    'accent-hover': pick('brand', hoverIndex(brandIndex, 1, lightOnAccent)),
+    'on-accent': lightOnAccent,
     danger: pick('danger', passingIndex('danger', dangerIndex, 1, [lightBg, white])),
     success: pick('success', passingIndex('success', successIndex, 1, [lightBg, white])),
   };
@@ -103,6 +112,7 @@ export function buildTokens(input) {
   const darkSurface = pick('neutral', LAST - 1);
   const darkAccentIndex = passingIndex('brand', brandIndex, -1, [darkBg]);
   const darkAccent = pick('brand', darkAccentIndex);
+  const darkOnAccent = onAccent(darkAccent);
   const dark = {
     bg: darkBg,
     surface: darkSurface,
@@ -110,8 +120,8 @@ export function buildTokens(input) {
     'text-muted': pick('neutral', passingIndex('neutral', 6, -1, [darkBg, darkSurface])),
     border: pick('neutral', 8),
     accent: darkAccent,
-    'accent-hover': pick('brand', neighbour(darkAccentIndex, -1)),
-    'on-accent': onAccent(darkAccent),
+    'accent-hover': pick('brand', hoverIndex(darkAccentIndex, -1, darkOnAccent)),
+    'on-accent': darkOnAccent,
     danger: pick('danger', passingIndex('danger', dangerIndex, -1, [darkBg, darkSurface])),
     success: pick('success', passingIndex('success', successIndex, -1, [darkBg, darkSurface])),
   };
