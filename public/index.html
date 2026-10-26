@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="uk" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Token Lab</title>
+  <script>
+    // Тема виставляється до першого малювання, щоб не було спалаху. За замовчуванням темна.
+    try { var savedTheme = localStorage.getItem('token-lab-theme'); } catch (e) {}
+    document.documentElement.dataset.theme = savedTheme === 'light' ? 'light' : 'dark';
+  </script>
+  <meta name="description" content="Введи hex бренду - отримаєш шкалу 50-950, токени для світлої і темної теми та перевірку контрасту WCAG.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Crect width='18' height='18' rx='5' fill='%234f46e5'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#scale">До результатів</a>
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="logo" href="/"><span class="logo__mark" aria-hidden="true"></span>Token Lab</a>
+      <nav class="nav" aria-label="Розділи">
+        <a href="#scale">Шкала</a>
+        <a href="#tokens">Токени</a>
+        <a href="#contrast">Контраст</a>
+        <a href="#export">Експорт</a>
+      </nav>
+      <span class="topbar__spacer"></span>
+      <div class="topbar__actions">
+        <button type="button" class="btn btn--outline" id="theme-toggle" aria-label="Перемкнути на світлу тему">Світла</button>
+        <button type="button" class="btn btn--primary" id="share">Поділитися</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <aside class="panel" aria-label="Бренд-колір">
+      <div class="panel__inner">
+        <p class="eyebrow">01 / Бренд-колір</p>
+
+        <div class="intro">
+          <h1 class="intro__title">Один колір. Уся система токенів.</h1>
+          <p class="intro__text">Введи hex бренду - отримаєш шкалу 50-950, токени для світлої і темної теми та перевірку контрасту WCAG.</p>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="hex-input">Hex</label>
+          <div class="hexbox" id="hexbox">
+            <label class="hexbox__chip" id="hex-chip" title="Обрати колір">
+              <span class="sr-only">Обрати колір у пікері</span>
+              <input class="hexbox__picker" id="hex-picker" type="color" value="#4f46e5">
+            </label>
+            <span class="hexbox__hash" aria-hidden="true">#</span>
+            <input class="hexbox__input" id="hex-input" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="hex-error" aria-invalid="false">
+          </div>
+          <p class="field__error" id="hex-error" role="alert" hidden></p>
+        </div>
+
+        <div class="field">
+          <span class="field__label" id="presets-label">Спробуй</span>
+          <div class="presets" id="presets" role="group" aria-labelledby="presets-label"></div>
+        </div>
+
+        <dl class="meta">
+          <div class="meta__row"><dt>Твій колір</dt><dd id="meta-anchor"></dd></div>
+          <div class="meta__row"><dt>OKLCH</dt><dd id="meta-oklch"></dd></div>
+          <div class="meta__row"><dt>Кнопка, світла</dt><dd id="meta-on-accent"></dd></div>
+        </dl>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="section" id="scale" aria-labelledby="scale-title">
+        <header class="section__head">
+          <div>
+            <p class="eyebrow">02 / Шкала</p>
+            <h2 class="section__title" id="scale-title">Тональна шкала</h2>
+          </div>
+          <p class="section__note">Клік по свотчу копіює hex</p>
+        </header>
+        <div class="scales">
+          <div class="scale">
+            <h3 class="scale__label">Brand</h3>
+            <div class="scale__swatches" id="brand-scale"></div>
+          </div>
+          <div class="scale">
+            <h3 class="scale__label">Neutral</h3>
+            <div class="scale__swatches" id="neutral-scale"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="tokens" aria-labelledby="tokens-title">
+        <header class="section__head">
+          <div>
+            <p class="eyebrow">03 / Токени</p>
+            <h2 class="section__title" id="tokens-title">Семантичні токени</h2>
+          </div>
+          <p class="section__note">Компоненти беруть тільки їх, не примітиви</p>
+        </header>
+        <div class="tokens-card">
+          <table class="tokens">
+            <thead>
+              <tr><th scope="col">Токен</th><th scope="col">Світла</th><th scope="col">Темна</th></tr>
+            </thead>
+            <tbody id="tokens-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section" id="contrast" aria-labelledby="contrast-title">
+        <header class="section__head">
+          <div>
+            <p class="eyebrow">04 / Контраст</p>
+            <h2 class="section__title" id="contrast-title">Перевірка на живому UI</h2>
+          </div>
+          <p class="section__note">WCAG 2.2: текст 4.5:1, UI-елементи 3:1</p>
+        </header>
+        <div class="compare">
+          <article class="cmp" id="cmp-light"></article>
+          <article class="cmp" id="cmp-dark"></article>
+        </div>
+      </section>
+
+      <section class="section" id="export" aria-labelledby="export-title">
+        <header class="section__head">
+          <div>
+            <p class="eyebrow">05 / Експорт</p>
+            <h2 class="section__title" id="export-title">Забирай у проєкт</h2>
+          </div>
+        </header>
+        <div class="export">
+          <div class="export__bar">
+            <div class="tabs" role="tablist" aria-label="Формат експорту">
+              <button type="button" class="tab" role="tab" aria-selected="true">CSS</button>
+              <button type="button" class="tab" role="tab" aria-selected="false" aria-disabled="true" title="Буде в наступному кроці">Tailwind</button>
+              <button type="button" class="tab" role="tab" aria-selected="false" aria-disabled="true" title="Буде в наступному кроці">Figma JSON</button>
+            </div>
+            <button type="button" class="btn btn--outline btn--sm" id="copy-css">Копіювати</button>
+          </div>
+          <pre class="export__code" tabindex="0" aria-label="CSS-код токенів"><code id="css-code"></code></pre>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
