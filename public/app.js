@@ -98,7 +98,7 @@ function renderCompare(root, title, theme) {
         <p class="pv-desc">Безлімітні палітри, експорт у Figma і спільний доступ для команди.</p>
         <div class="pv-field">
           <span class="pv-label">Email</span>
-          <span class="pv-input">dmytro.uxhero</span>
+          <span class="pv-input">yourmail.gmail.com</span>
         </div>
         <div class="pv-line"><span class="pv-error">Бракує @ в адресі</span>${note(byId['danger-surface'])}</div>
         <div class="pv-actions">
