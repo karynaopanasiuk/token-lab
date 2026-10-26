@@ -32,8 +32,11 @@ const el = {
   css: $('#css-code'),
   copyCss: $('#copy-css'),
   share: $('#share'),
+  theme: $('#theme-toggle'),
   toast: $('#toast'),
 };
+
+const THEME_KEY = 'token-lab-theme';
 
 const state = { hex: PRESETS[0].hex, css: '' };
 
@@ -244,6 +247,28 @@ document.addEventListener('click', (event) => {
   const target = event.target.closest('[data-copy]');
   if (target) copyText(target.dataset.copy);
 });
+
+// --- тема інтерфейсу ---
+
+// Кнопка підписана тим, на що перемкне: у темній темі «Світла», у світлій «Темна».
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  const toLight = theme === 'dark';
+  el.theme.textContent = toLight ? 'Світла' : 'Темна';
+  el.theme.setAttribute('aria-label', toLight ? 'Перемкнути на світлу тему' : 'Перемкнути на темну тему');
+}
+
+el.theme.addEventListener('click', () => {
+  const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  applyTheme(theme);
+  try {
+    localStorage.setItem(THEME_KEY, theme);
+  } catch {
+    // Приватний режим: тема просто не збережеться.
+  }
+});
+
+applyTheme(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
 
 el.copyCss.addEventListener('click', () => copyText(state.css));
 el.share.addEventListener('click', () => showToast('Посилання на палітру з’явиться в наступному кроці'));

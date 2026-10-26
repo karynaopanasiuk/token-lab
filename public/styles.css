@@ -2,6 +2,8 @@
    Кольори палітри живуть у свотчах і прев'ю: їх виставляє app.js (--swatch, --pv-*). */
 
 :root {
+  color-scheme: light;
+
   --page: #f4f3ef;
   --card: #ffffff;
   --line: #e3e1d9;
@@ -18,15 +20,51 @@
   --chip-edge: rgba(0, 0, 0, 0.1);
   --sample-edge: rgba(0, 0, 0, 0.08);
 
-  --ok-bg: #e3f3e8;
-  --ok-fg: #1d7a46;
-  --warn-bg: #fbefd2;
-  --warn-fg: #7a4d00;
-  --fail-bg: #fde8e6;
-  --fail-fg: #b42318;
+  /* Лишаються світлими в будь-якій темі: стоять на кольорах палітри (прев'ю, свотчі). */
+  --fixed-ok-bg: #e3f3e8;
+  --fixed-ok-fg: #1d7a46;
+  --fixed-warn-bg: #fbefd2;
+  --fixed-warn-fg: #7a4d00;
+  --fixed-fail-bg: #fde8e6;
+  --fixed-fail-fg: #b42318;
+  --tag-bg: rgba(255, 255, 255, 0.9);
+  --tag-fg: #141413;
+
+  --ok-bg: var(--fixed-ok-bg);
+  --ok-fg: var(--fixed-ok-fg);
+  --warn-bg: var(--fixed-warn-bg);
+  --warn-fg: var(--fixed-warn-fg);
+  --fail-bg: var(--fixed-fail-bg);
+  --fail-fg: var(--fixed-fail-fg);
 
   --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --page: #141413;
+  --card: #1c1c1a;
+  --line: #2e2d2a;
+  --line-field: #46443f;
+  --ink: #f4f3ef;
+  --ink-hover: #dad8d0;
+  --ink-2: #c9c7bf;
+  --muted: #9b998f;
+  --on-ink: #141413;
+  --err: #ff8a7d;
+
+  --swatch-edge: rgba(255, 255, 255, 0.1);
+  --chip-edge: rgba(255, 255, 255, 0.16);
+  --sample-edge: rgba(255, 255, 255, 0.14);
+
+  --ok-bg: #16301f;
+  --ok-fg: #86d9a8;
+  --warn-bg: #3a2c0b;
+  --warn-fg: #f2c46a;
+  --fail-bg: #3d1815;
+  --fail-fg: #ff9b90;
 }
 
 *,
@@ -151,6 +189,11 @@ a {
 
 .topbar__spacer {
   flex: 1;
+}
+
+.topbar__actions {
+  display: flex;
+  gap: 8px;
 }
 
 .logo {
@@ -483,8 +526,8 @@ a {
 .swatch__badge {
   padding: 4px 6px;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--ink);
+  background: var(--tag-bg);
+  color: var(--tag-fg);
   font: 500 10px/normal var(--font-mono);
   white-space: nowrap;
 }
@@ -632,6 +675,13 @@ a {
   gap: 12px;
   padding: 24px;
   background: var(--pv-bg);
+
+  --ok-bg: var(--fixed-ok-bg);
+  --ok-fg: var(--fixed-ok-fg);
+  --warn-bg: var(--fixed-warn-bg);
+  --warn-fg: var(--fixed-warn-fg);
+  --fail-bg: var(--fixed-fail-bg);
+  --fail-fg: var(--fixed-fail-fg);
 }
 
 .pv-card {
